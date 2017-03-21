@@ -114,7 +114,19 @@ public class MyLinkedListTester {
 		assertEquals("Remove: check element 0 is correct ", (Integer)21, list1.get(0));
 		assertEquals("Remove: check size is correct ", 2, list1.size());
 		
-		// TODO: Add more tests here
+		try {
+			list1.remove(-1);
+			fail("Check out of bounds");
+		}
+		catch (IndexOutOfBoundsException e) {
+		}
+
+		try {
+			list1.remove(list1.size() + 1);
+			fail("Check out of bounds");
+		}
+		catch (IndexOutOfBoundsException e) {
+		}
 	}
 	
 	/** Test adding an element into the end of the list, specifically
@@ -123,8 +135,10 @@ public class MyLinkedListTester {
 	@Test
 	public void testAddEnd()
 	{
-        // TODO: implement this test
-		
+		int sizeBefore = list1.size(); 
+		list1.add(sizeBefore, 7);
+		assertEquals("testAddEnd: check a is correct ", list1.size(), sizeBefore + 1);
+		assertEquals("testAddEnd: check a is correct ", list1.get(sizeBefore), (Integer)7);
 	}
 
 	
@@ -144,15 +158,54 @@ public class MyLinkedListTester {
 	@Test
 	public void testAddAtIndex()
 	{
-        // TODO: implement this test
-		
+		list1.add(2, 17);
+		assertEquals("testAddAtIndex: check a is correct ", list1.get(2), (Integer)17);
+		try {
+			list1.add(-1, 7);
+			fail("Check out of bounds");
+		}
+		catch (IndexOutOfBoundsException e) {
+		}
+		try {
+			list1.add(list1.size() + 1, 7);
+			fail("Check out of bounds");
+		}
+		catch (IndexOutOfBoundsException e) {
+		}
+		try {
+			list1.add(0, null);
+			fail("Check out of bounds");
+		}
+		catch (NullPointerException e) {
+		}
 	}
 	
 	/** Test setting an element in the list */
 	@Test
 	public void testSet()
 	{
-	    // TODO: implement this test
+		try {
+			list1.set(-1, 7);
+			fail("Check out of bounds");
+		}
+		catch (IndexOutOfBoundsException e) {
+		}
+
+		try {
+			list1.set(list1.size() + 1, 7);
+			fail("Check out of bounds");
+		}
+		catch (IndexOutOfBoundsException e) {
+		}
+		
+		try {
+			list1.set(0, null);
+			fail("Check out of bounds");
+		}
+		catch (NullPointerException e) {
+		}
+		
+	   
 	    
 	}
 	
