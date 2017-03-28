@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.LinkedList;
 
 /** 
@@ -20,6 +21,7 @@ public class AutoCompleteDictionaryTrie implements  Dictionary, AutoComplete {
     public AutoCompleteDictionaryTrie()
 	{
 		root = new TrieNode();
+		size = 0; 
 	}
 	
 	
@@ -39,8 +41,24 @@ public class AutoCompleteDictionaryTrie implements  Dictionary, AutoComplete {
 	 */
 	public boolean addWord(String word)
 	{
-	    //TODO: Implement this method.
-	    return false;
+		word = word.toLowerCase(); 
+		TrieNode iterNode = root;
+		boolean ret = false; 
+		while (!word.isEmpty()){
+			if (iterNode.insert(word.charAt(0)) != null){
+				ret = true;
+			}
+			iterNode = iterNode.getChild(word.charAt(0));
+			word = word.substring(1);
+				
+		}
+		if ((ret) || (!ret && !iterNode.endsWord())){
+			iterNode.setEndsWord(true);
+			++size; 
+		}
+
+	    
+		return ret;
 	}
 	
 	/** 
@@ -49,8 +67,7 @@ public class AutoCompleteDictionaryTrie implements  Dictionary, AutoComplete {
 	 */
 	public int size()
 	{
-	    //TODO: Implement this method
-	    return 0;
+	    return size;
 	}
 	
 	
@@ -59,8 +76,17 @@ public class AutoCompleteDictionaryTrie implements  Dictionary, AutoComplete {
 	@Override
 	public boolean isWord(String s) 
 	{
-	    // TODO: Implement this method
-		return false;
+		if (s.isEmpty())
+			return false; 
+		s = s.toLowerCase(); 
+		TrieNode iterNode = root;
+		while (!s.isEmpty()){
+			if (iterNode.getChild(s.charAt(0)) == null)
+				return false;
+			iterNode = iterNode.getChild(s.charAt(0));
+			s = s.substring(1);
+		}
+		return true;
 	}
 
 	/** 
@@ -100,8 +126,33 @@ public class AutoCompleteDictionaryTrie implements  Dictionary, AutoComplete {
     	 //       If it is a word, add it to the completions list
     	 //       Add all of its child nodes to the back of the queue
     	 // Return the list of completions
-    	 
-         return null;
+    	
+    	TrieNode iterNode = root;
+    	List<String> preList = new LinkedList<String>();
+    	LinkedList<TrieNode> nodeList = new LinkedList<TrieNode>(); 
+    	
+ 		while (!prefix.isEmpty()){
+ 			if (iterNode.getChild(prefix.charAt(0)) == null)
+ 				return preList;
+ 			iterNode = iterNode.getChild(prefix.charAt(0));
+ 			prefix = prefix.substring(1);
+ 		}
+ 		
+ 		nodeList.add(iterNode);
+ 		
+ 		while((preList.size() < numCompletions) && (!nodeList.isEmpty()))
+ 		{
+ 			iterNode = nodeList.remove();
+ 			if (iterNode.endsWord())
+	    		preList.add(iterNode.getText());
+	    	
+	    	for (Character c : iterNode.getValidNextCharacters()){
+	    		nodeList.add(iterNode.getChild(c));
+	    	}
+	    	
+	    }
+ 		
+ 		return preList;
      }
 
  	// For debugging
